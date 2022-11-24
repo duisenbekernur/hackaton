@@ -1,12 +1,14 @@
 import "./App.css";
-// import ProductCard from "./components/Card";
-import Map from "./components/Map/Map";
-// import Navbar from "./components/Navbar";
+import ProductCard from "./components/Card";
+import Navbar from "./components/Navbar";
 
 function App() {
+  const [isLogged, setIsLogged] = useState(true);
+  const [registerStore, setRegisterStore] = useState(false);
   return (
     <>
-      <Map />
+      <Navbar />
+      <ProductCard />
     </>
   );
 }

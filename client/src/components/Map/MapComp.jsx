@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import s from "./Map.module.scss";
+import { useDispatch } from "react-redux";
+import { addCords } from "../../app/slices/mapSlice";
 import {
   MapContainer,
   Marker,
@@ -17,9 +19,11 @@ const iconImg = L.icon({
 });
 
 function LocationMarker() {
+  const dispatch = useDispatch();
   const [position, setPosition] = useState(null);
   const map = useMapEvents({
     click(e) {
+      dispatch(addCords(e.latlng));
       setPosition(e.latlng);
     },
     locationfound(e) {
