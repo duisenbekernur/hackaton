@@ -1,0 +1,17 @@
+.mainMap{
+    display: flex;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 60vh;
+    margin: 0 auto;
+    .map{
+        width: 100%;
+        height: 60vh;
+        .mapContainer{
+            width: 50%;
+            height: 100%;
+        }
+    }
+}
