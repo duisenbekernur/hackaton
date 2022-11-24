@@ -1,0 +1,13 @@
+.mainMap{
+    display: flex;
+    height: auto;
+    .map{
+        border: 1px solid red;
+        height: 150px;
+        width: 80%;
+        .mapContainer{
+            width: 50%;
+            height: 100%;
+        }
+    }
+}
