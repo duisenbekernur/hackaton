@@ -1,0 +1,28 @@
+.root {
+  margin-top: 15px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+
+  li {
+    list-style: none;
+    margin-bottom: 50px;
+    border: 1px solid #00a2ff;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.2s all;
+
+    a {
+      color: #00a2ff;
+    }
+
+    &:hover {
+      background-color: #00a2ff;
+
+      a {
+        color: #fff;
+      }
+    }
+  }
+}

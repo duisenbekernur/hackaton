@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -16,28 +17,29 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
+// import redux function
+import { fetchAuth } from "../../app/slices/authSlice";
+import { selectIsLogged } from "../../app/slices/authSlice";
+
 const Login = () => {
   const navigate = useNavigate();
-
-  // если юзер зашел с remember me
-  if (localStorage.getItem("isSigned") === "true") {
-    return <Navigate to="/main" />;
-  }
+  const dispatch = useDispatch();
+  const isLogged = useSelector(selectIsLogged);
 
   const submit = async (values) => {
     const user = { email: values.email, password: values.password };
-    // const res = await axios.post("http://localhost:3001/auth/login", user);
-    // if (res.data.message === "User is not found!") {
-    //   toast.warn("User is not found!", {
-    //     position: "top-right",
-    //     autoClose: 5000,
-    //   });
-    // } else {
-    //   navigate("/main");
-    //   if (values.rememberMe) {
-    //     localStorage.setItem("isSigned", "true");
-    //   }
-    // }
+
+    // check user login datas
+    const data = await dispatch(fetchAuth(user));
+
+    if (!data.payload) {
+      return alert("Не удалось авторизоваться!");
+    }
+
+    if ("token" in data.payload) {
+      window.localStorage.setItem("token", `Token ${data.payload.token}`);
+      window.localStorage.setItem("username");
+    }
   };
 
   return (
@@ -50,7 +52,6 @@ const Login = () => {
             initialValues={{
               email: "",
               password: "",
-              rememberMe: false,
             }}
             onSubmit={submit}
           >
@@ -82,15 +83,6 @@ const Login = () => {
                     />
                     <FormErrorMessage>{errors.password}</FormErrorMessage>
                   </FormControl>
-
-                  <Field
-                    as={Checkbox}
-                    id="rememberMe"
-                    name="rememberMe"
-                    colorScheme="purple"
-                  >
-                    Remember me?
-                  </Field>
 
                   <Button type="submit" colorScheme="purple" width="full">
                     Войти

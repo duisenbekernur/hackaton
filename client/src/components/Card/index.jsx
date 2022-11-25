@@ -1,7 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Card,
-  CardHeader,
   CardBody,
   Image,
   Stack,
@@ -13,7 +13,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-const ProductCard = () => {
+const ProductCard = ({ id }) => {
   return (
     <Card maxW="sm">
       <CardBody>
@@ -37,11 +37,13 @@ const ProductCard = () => {
       <Divider />
       <CardFooter>
         <ButtonGroup spacing="2">
-          <Button variant="solid" colorScheme="blue">
-            Buy now
-          </Button>
+          <Link to={`/product/${id}`}>
+            <Button variant="solid" colorScheme="blue">
+              Купить
+            </Button>
+          </Link>
           <Button variant="ghost" colorScheme="blue">
-            Add to cart
+            Добавить в корзину
           </Button>
         </ButtonGroup>
       </CardFooter>

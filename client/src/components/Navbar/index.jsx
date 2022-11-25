@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Button } from "@chakra-ui/react";
 import menu from "../../const/menu";
 import menuUrl from "../../const/menuUrl";
 
+import { selectIsLogged, user } from "../../app/slices/authSlice";
+
 const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState(0);
+  const [isAuth, setIsAuth] = useState(false);
+
+  const isLogged = useSelector(selectIsLogged);
+  const userDatas = useSelector(user);
+
+  const logout = () => {
+    window.localStorage.clear();
+    window.location.pathname = "/login";
+  };
 
   const getIndexOfActiveMenu = () => {
     setActiveMenu(menuUrl.indexOf(window.location.pathname.replace("/", "")));
@@ -12,6 +25,7 @@ const Navbar = () => {
 
   useEffect(() => {
     getIndexOfActiveMenu();
+    setIsAuth(Boolean(window.localStorage.getItem("token")));
   }, []);
 
   return (
@@ -20,7 +34,7 @@ const Navbar = () => {
         <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
           <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
             {menu.map((item, index) => (
-              <li>
+              <li key={index}>
                 <Link
                   to={`/${menuUrl[index]}`}
                   onClick={() => setActiveMenu(index)}
@@ -47,18 +61,34 @@ const Navbar = () => {
             </li>
           </ul>
 
-          <div className="text-end">
-            <Link to="/login">
-              <button type="button" className="btn btn-outline-light me-2">
-                Войти
-              </button>
-            </Link>
-            <Link to="/register">
-              <button type="button" className="btn btn-warning">
-                Регистрация
-              </button>
-            </Link>
-          </div>
+          {!isLogged && !isAuth ? (
+            <div className="text-end">
+              <Link to="/login">
+                <button type="button" className="btn btn-outline-light me-2">
+                  Войти
+                </button>
+              </Link>
+              <Link to="/register">
+                <button type="button" className="btn btn-warning">
+                  Регистрация
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <>
+              <Link to="/favourites">
+                <img width={30} src="/uploads/favourite.png" alt="" />
+              </Link>
+              <h3 style={{ marginLeft: "25px" }}>{userDatas?.name}</h3>
+              <Button
+                colorScheme="red"
+                style={{ margin: "0 0 0 55px" }}
+                onClick={logout}
+              >
+                Выйти
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

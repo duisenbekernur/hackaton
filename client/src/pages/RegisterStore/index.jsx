@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { json, Link } from "react-router-dom";
 import { Formik, Field } from "formik";
 import {
   Box,
@@ -12,15 +15,33 @@ import {
   Input,
   VStack,
 } from "@chakra-ui/react";
+import MapComp from "../../components/Map/MapComp";
+
+import categories from "../../const/categories";
 
 const RegisterStore = ({ setRegisterStore }) => {
+  const [category, setCategory] = useState([]);
+
+  const storePosition = useSelector((state) => state.map.coords);
+
   const submit = async (values) => {
-    alert(JSON.stringify(values, null, 2));
-    // const res = await axios.post(
-    //   "http://localhost:3001/auth/register",
-    //   JSON.parse(JSON.stringify(values, null, 2))
-    // );
-    // console.log(res.data);
+    const store = {
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      position: storePosition,
+      categories: category.join(""),
+    };
+    alert(JSON.stringify(store, null, 2));
+    await axios.post("/auth/register/", store);
+  };
+
+  const addCategory = (i) => {
+    if (category.find((elem) => i === elem) === undefined) {
+      setCategory([...category, i]);
+    } else {
+      setCategory(category.filter((elem) => elem !== i));
+    }
   };
 
   return (
@@ -33,6 +54,7 @@ const RegisterStore = ({ setRegisterStore }) => {
             initialValues={{
               email: "",
               name: "",
+              position: storePosition,
               password: "",
             }}
             onSubmit={submit}
@@ -48,6 +70,42 @@ const RegisterStore = ({ setRegisterStore }) => {
                     <FormLabel htmlFor="email">Имя</FormLabel>
                     <Field as={Input} id="name" name="name" type="text" />
                   </FormControl>
+                  <Popup
+                    popupClass={"popup-content"}
+                    trigger={
+                      <Button
+                        colorScheme={
+                          storePosition.lat !== null ? "green" : "gray"
+                        }
+                        width="full"
+                      >
+                        {storePosition.lat !== null
+                          ? "Выбрано"
+                          : "Выбрать на карте"}
+                      </Button>
+                    }
+                  >
+                    <MapComp />
+                    <p></p>
+                  </Popup>
+                  <ul className="register-categories">
+                    <FormLabel>
+                      Выберите категории: <br />
+                    </FormLabel>
+                    {categories.map((item, i) => (
+                      <li
+                        key={i}
+                        onClick={() => addCategory(i)}
+                        className={
+                          Boolean(category.find((elem) => i === elem))
+                            ? "active"
+                            : ""
+                        }
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                   <FormControl
                     isInvalid={!!errors.password && touched.password}
                   >

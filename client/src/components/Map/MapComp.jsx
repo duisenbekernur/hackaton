@@ -40,7 +40,10 @@ function LocationMarker() {
 }
 
 const MapComp = () => {
-  const [center, setCenter] = useState({ lat: 13.084622, lng: 80.248357 });
+  const [center, setCenter] = useState({
+    lat: 51.14665642264855,
+    lng: 71.44849094974086,
+  });
   const ZOOM_LEVEL = 13;
   return (
     <div className={s.mainMap}>
@@ -69,21 +72,3 @@ const MapComp = () => {
 };
 
 export default MapComp;
-
-// <MapContainer
-//   center={{ lat: 51.505, lng: -0.09 }}
-//   zoom={13}
-//   scrollWheelZoom={true}
-//   className={s.mapContainer}
-// >
-//   <TileLayer
-//     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//   />
-//   <Marker position={position}>
-//     <Popup>
-//       A pretty CSS3 popup. <br /> Easily customizable.
-//     </Popup>
-//   </Marker>
-//   {/* <LocationMarker /> */}
-// </MapContainer>;

@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import axios from "../../axios";
 import { Link } from "react-router-dom";
 import { Formik, Field } from "formik";
 import {
@@ -14,17 +14,11 @@ import {
 } from "@chakra-ui/react";
 
 const Register = ({ setRegisterStore }) => {
-  if (localStorage.getItem("isSigned") === "true") {
-    window.location.pathname = "/chat";
-  }
-
   const submit = async (values) => {
-    alert(JSON.stringify(values, null, 2));
-    // const res = await axios.post(
-    //   "http://localhost:3001/auth/register",
-    //   JSON.parse(JSON.stringify(values, null, 2))
-    // );
-    // console.log(res.data);
+    const res = await axios.post(
+      "/auth/signup/",
+      JSON.parse(JSON.stringify(values, null, 2))
+    );
   };
 
   return (
@@ -39,6 +33,8 @@ const Register = ({ setRegisterStore }) => {
             initialValues={{
               email: "",
               name: "",
+              lastname: "",
+              phone: "",
               password: "",
             }}
             onSubmit={submit}
@@ -51,8 +47,21 @@ const Register = ({ setRegisterStore }) => {
                     <Field as={Input} id="email" name="email" type="email" />
                   </FormControl>
                   <FormControl>
-                    <FormLabel htmlFor="email">Имя</FormLabel>
+                    <FormLabel>Имя</FormLabel>
                     <Field as={Input} id="name" name="name" type="text" />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="email">Фамилия</FormLabel>
+                    <Field
+                      as={Input}
+                      id="lastname"
+                      name="lastname"
+                      type="text"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="email">Телефон</FormLabel>
+                    <Field as={Input} id="phone" name="phone" type="text" />
                   </FormControl>
                   <FormControl
                     isInvalid={!!errors.password && touched.password}
