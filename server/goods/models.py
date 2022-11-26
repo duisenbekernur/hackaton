@@ -7,12 +7,12 @@ class Goods(models.Model):
     description = models.TextField()
     price = models.CharField(max_length=15)
     image = models.CharField(max_length=500)
-    rating = models.IntegerField()
+    rating = models.IntegerField(default=0)
     category = models.CharField(max_length=5)
     link = models.CharField(max_length=500)
     shopName = models.CharField(max_length=50)
-    lat = models.DecimalField(decimal_places=14, max_digits=18)
-    lng = models.DecimalField(decimal_places=14, max_digits=18)
+    lat = models.DecimalField(decimal_places=14, max_digits=18, default=0)
+    lng = models.DecimalField(decimal_places=14, max_digits=18, default=0)
 
     def __str__(self):
         return self.name

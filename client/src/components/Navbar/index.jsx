@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Button } from "@chakra-ui/react";
 import menu from "../../const/menu";
 import menuUrl from "../../const/menuUrl";
 
 import { selectIsLogged, user } from "../../app/slices/authSlice";
+import { changeValue } from "../../app/slices/searchProductSlice";
 
 const Navbar = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [activeMenu, setActiveMenu] = useState(0);
   const [isAuth, setIsAuth] = useState(false);
+
+  const dispatch = useDispatch();
 
   const isLogged = useSelector(selectIsLogged);
   const userDatas = useSelector(user);
@@ -52,6 +56,10 @@ const Navbar = () => {
                 role="search"
               >
                 <input
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    dispatch(changeValue(searchValue));
+                  }}
                   type="search"
                   className="form-control form-control-dark text-bg-light"
                   placeholder="Search..."

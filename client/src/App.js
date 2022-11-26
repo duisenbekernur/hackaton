@@ -17,10 +17,13 @@ import ProductPage from "./pages/Product";
 // import slice
 import { selectIsLogged, fetchMe, userId } from "./app/slices/authSlice";
 import Favourites from "./pages/Favourites";
+import Footer from "./components/Footer";
 
 function App() {
   const [registerStore, setRegisterStore] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
+
+  // данные из Redux
   const isLogged = useSelector(selectIsLogged);
   const id = useSelector(userId);
 
@@ -28,7 +31,7 @@ function App() {
 
   useEffect(() => {
     setIsAuth(Boolean(window.localStorage.getItem("token")));
-    if (id !== undefined) dispatch(fetchMe({id}));
+    if (id !== undefined) dispatch(fetchMe({ id }));
   }, [isLogged]);
   return (
     <>
@@ -69,6 +72,7 @@ function App() {
           />
         </Routes>
       </div>
+      <Footer />
     </>
   );
 }

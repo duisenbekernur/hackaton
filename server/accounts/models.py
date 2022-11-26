@@ -55,7 +55,7 @@ class accounts(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return self.email
+        return str(self.id)
 
 
 class favorites(models.Model):

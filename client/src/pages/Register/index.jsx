@@ -14,6 +14,8 @@ import {
 } from "@chakra-ui/react";
 
 const Register = ({ setRegisterStore }) => {
+
+  // пост запрос регистрации
   const submit = async (values) => {
     const res = await axios.post(
       "/auth/signup/",
@@ -27,8 +29,11 @@ const Register = ({ setRegisterStore }) => {
       <p>
         Для входа в маркетплейс, вам нужно зарегистрироваться как покупатель
       </p>
+      {/* Контейнер регистрации */}
       <Flex bg="gray.100" align="center" justify="center">
         <Box bg="white" p={6} rounded="md" w="400px" boxShadow="lg">
+
+          {/* Форма регистрации */}
           <Formik
             initialValues={{
               email: "",

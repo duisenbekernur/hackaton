@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import MapStores from "../../components/StoresMap/MapStores";
 
 const Markets = () => {
   return (
-    <div>Markets</div>
-  )
-}
+    <div className="map-store-container">
+      <MapStores />{" "}
+    </div>
+  );
+};
 
-export default Markets
+export default Markets;

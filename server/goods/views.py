@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
 class GoodsView(generics.GenericAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request: Request):
         goods = Goods.objects.all()
@@ -22,7 +22,7 @@ class GoodsView(generics.GenericAPIView):
 
 
 class GoodView(generics.GenericAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request: Request, pk):
         try:

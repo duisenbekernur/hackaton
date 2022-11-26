@@ -2,7 +2,8 @@ from rest_framework import serializers
 from rest_framework.validators import ValidationError
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from .models import accounts
+from .models import accounts, favorites
+from goods.serializer import GoodsSerializer
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -38,4 +39,10 @@ class SignUpSerializer(serializers.ModelSerializer):
 class accountSerializer(serializers.ModelSerializer):
     class Meta:
         model = accounts
+        fields = '__all__'
+
+
+class favouritesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = favorites
         fields = '__all__'

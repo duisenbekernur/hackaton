@@ -8,6 +8,7 @@
 
 .app {
   width: 1200px;
+  min-height: 80vh;
   margin: 0 auto;
 }
 
@@ -16,4 +17,12 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+.map-store-container {
+  width: 1200px;
+}
+
+.container {
+  text-align: center;
 }
