@@ -8,6 +8,7 @@ from django.http.request import HttpRequest
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.parsers import JSONParser
 from django.views.decorators.csrf import csrf_exempt
 from .models import accounts, favorites
 
@@ -85,33 +86,31 @@ class getUserView(generics.GenericAPIView):
         return True
 
 
-# @csrf_exempt
-# def getFavourites(request: HttpRequest, pk):
-#     try:
-#         fav = favorites.objects.get(user=pk)
-#     except fav.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-
-#     if request.method == 'GET':
-#         mura_serializer = favouritesSerializer(fav, many=True)
-#         return JsonResponse(mura_serializer.data, status=status.HTTP_200_OK)
-
 class getFavourites(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = favouritesSerializer
+
+    def post(self, request: Request):
+        data = request.data
+
+        serializer = self.serializer_class(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            response = {
+                "message": "Success",
+                "data": serializer.data
+            }
+            return Response(data=response, status=status.HTTP_201_CREATED)
+
+        return Response(data=serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request: Request):
-        try:
-            fav = favorites.objects.all()
-        except fav.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = favouritesSerializer(fav, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-        # fav = favorites.objects.select_related('good').get(id=pk)
-        # if fav.DoesNotExist:
-        #     return Response(status=status.HTTP_404_NOT_FOUND)
-        # else:
-        #     serializer = favouritesSerializer(fav)
-        #     return Response(data=serializer.data, status=status.HTTP_200_OK)
+        fav = favorites.objects.all()
+        if fav is not None:
+            serializer = favouritesSerializer(fav, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     def get_queryset(self):
         return True

@@ -86,10 +86,12 @@ const Main = () => {
       </div>
       <div className="products-block">
         {/* view products */}
-        {console.log('search', searchValue)}
         {productsCopy
           .filter((product) =>
             product.name.toLowerCase().includes(searchValue.toLowerCase())
+          )
+          .filter((product) =>
+            product.category.includes(activeCategory.toString()) || activeCategory === 0
           )
           .slice((currentPage - 1) * limitProduct, currentPage * limitProduct)
           .map((product, i) => (

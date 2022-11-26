@@ -1,6 +1,7 @@
 import React from "react";
 import s from "./MapStores.module.scss";
 import { debounce } from "lodash";
+import data from "../../const/stores.json";
 import {
   GoogleMap,
   Marker,
@@ -10,12 +11,14 @@ import {
   MarkerClusterer,
   DirectionsRenderer,
 } from "@react-google-maps/api";
+import { Select } from "@chakra-ui/react";
 
 import Search from "./Search/Search";
 
 const center = { lat: 51.14665642264855, lng: 71.44849094974086 };
-
+// data = data.filter( (el) => el.category == "Магазин бытовой техники")
 const MapStores = () => {
+  const [selectedCategory, setSelectedCategory] = React.useState("");
   const [selectedCoord, setSelectedCoord] = React.useState(null);
   const [circleR, setCircleR] = React.useState(0);
   const [directions, setDirections] = React.useState(null);
@@ -23,19 +26,22 @@ const MapStores = () => {
   const [localPosition, setLocalPosition] = React.useState(null);
   const [tr, setTr] = React.useState(" ");
 
-  const [stores, setStores] = React.useState([
-    { lat: 51.14665642264855, lng: 71.44849094974086, category: 2 },
-    { lat: 51.14837940137575, lng: 71.48179325686976, category: 3 },
-    { lat: 51.15925422009232, lng: 71.51217732059047, category: 5 },
-    { lat: 51.11844328997825, lng: 71.49878773318812, category: 4 },
-    { lat: 51.12291912090751, lng: 71.45163821415798, category: 6 },
-  ]);
-
+  const [stores, setStores] = React.useState([]);
+  data = data.filter(
+    (el) =>
+      el.category === "Бытовая техника" ||
+      el.category == "Appliance shop" ||
+      el.category == "Магазин электроники" ||
+      el.category == "Поставщик аудио- и видеоаппаратуры" ||
+      el.category == "Computer Shop" ||
+      el.category == "Computer Shop" ||
+      el.category == "Computer Software Shop" ||
+      el.category == "Комиссионный магазин компьютерной техники"
+  );
   setTimeout(() => {
-    setTr('s')
+    setTr("s");
   }, 1000);
-
-  useJsApiLoader({
+  const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyAEK1DZMHEp61t9OMxl3CCEPKjvjosDvjA", // Connectin API
     libraries: ["places", "drawing", "geometry"],
   });
@@ -78,8 +84,21 @@ const MapStores = () => {
     );
   };
 
+  const uniqueCategory = Array.from(
+    new Set(
+      data.map((el) => {
+        return el.category;
+      })
+    )
+  );
+
   React.useEffect(() => {
     try {
+      if (Boolean(selectedCategory)) {
+        return setStores(data.filter((el) => el.category === selectedCategory));
+      }
+      console.log(data);
+      setStores(data);
     } catch (error) {
       console.log(error);
     }
@@ -94,8 +113,8 @@ const MapStores = () => {
     } else {
       alert("Разрешите доступ к геолокаций чтобы увидить магазины рядом!");
     }
-  }, []);
-
+  }, [selectedCategory]);
+  console.log("render");
   return (
     <div className={s.mainMap}>
       <div className={s.map}>
@@ -105,82 +124,106 @@ const MapStores = () => {
             setSelectedCoord={setSelectedCoord}
             fetchDirections={fetchDirections}
           />
-          <p>Расстояние (в м.)</p>
+
+          <Select
+            placeholder="Select option"
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+            }}
+          >
+            {uniqueCategory.map((value, i) => (
+              <option key={i} value={value}>
+                {value}
+              </option>
+            ))}
+          </Select>
+
+          <p>Расстояние от вас(в м.)</p>
           <input
             type="number"
             placeholder="Введите цифру"
             onChange={handleChangeRadius}
           />
         </div>
-        <GoogleMap
-          mapContainerClassName={s.mapContainer}
-          zoom={13}
-          center={center}
-          mapContainerStyle={{ width: "80%", height: "80%" }}
-          ref={mapRef}
-          options={options}
-          onLoad={onMapLoad}
-        >
-          s
-          {directions && (
-            <DirectionsRenderer
-              directions={directions}
+        {isLoaded && (
+          <GoogleMap
+            mapContainerClassName={s.mapContainer}
+            zoom={13}
+            center={center}
+            mapContainerStyle={{ width: "80%", height: "80%" }}
+            ref={mapRef}
+            options={options}
+            onLoad={onMapLoad}
+          >
+            s
+            {directions && (
+              <DirectionsRenderer
+                directions={directions}
+                options={{
+                  polylineOptions: {
+                    zIndex: 50,
+                    strokeColor: "red",
+                    strokeWeight: 4,
+                  },
+                }}
+              />
+            )}
+            <CircleF
+              radius={circleR * 1}
+              center={localPosition}
+              draggable={false}
+              visible={true}
+              editable={false}
               options={{
-                polylineOptions: {
-                  zIndex: 50,
-                  strokeColor: "red",
-                  strokeWeight: 4,
-                },
+                strokeColor: "#EAAA02",
+                fillOpacity: 0.3,
+                fillColor: "green",
               }}
             />
-          )}
-          <CircleF
-            radius={circleR * 1}
-            center={localPosition}
-            draggable={false}
-            visible={true}
-            editable={false}
-            options={{
-              strokeColor: "#EAAA02",
-              fillOpacity: 0.3,
-              fillColor: "green",
-            }}
-          />
-          {selectedCoord === null ? null : (
-            <>
-              <Marker
-                position={selectedCoord}
-                onClick={() => setSelected(selectedCoord)}
-              />
-            </>
-          )}
-          <MarkerClusterer>
-            {(clusterer) =>
-              stores.map((el) => {
-                return (
-                  <Marker
-                    position={{ lat: el.lat, lng: el.lng }}
-                    clusterer={clusterer}
-                    onClick={() => {
-                      setSelected(el);
-                    }}
-                  />
-                );
-              })
-            }
-          </MarkerClusterer>
-          {selected ? (
-            <InfoWindow
-              position={{ lat: selected.lat, lng: selected.lng }}
-              onCloseClick={() => setSelected(null)}
-            >
-              <div>
-                ss<h3>Selected Place</h3>
-                <p>With category {selected.category}</p>
-              </div>
-            </InfoWindow>
-          ) : null}
-        </GoogleMap>
+            {selectedCoord === null ? null : (
+              <>
+                <Marker
+                  position={selectedCoord}
+                  onClick={() => setSelected(selectedCoord)}
+                />
+              </>
+            )}
+            <MarkerClusterer>
+              {(clusterer) =>
+                stores.map((el) => {
+                  return (
+                    <Marker
+                      position={{ lat: el.latitude, lng: el.longitude }}
+                      clusterer={clusterer}
+                      onClick={() => {
+                        console.log(el);
+                        setSelected(el);
+                      }}
+                    />
+                  );
+                })
+              }
+            </MarkerClusterer>
+            {selected ? (
+              <InfoWindow
+                position={{ lat: selected.latitude, lng: selected.longitude }}
+                onCloseClick={() => setSelected(null)}
+              >
+                <div>
+                  <h5>Город: {selected.city}</h5>
+                  <p>Название магазина: {selected.name}</p>
+                  <p>Категория: {selected.category}</p>
+                  <p>Адресс: {selected.full_address}</p>
+                  <p>Улица: {selected.street}</p>
+                  <p>Контактные данные: {selected.phone}</p>
+                  {selected.site ? (
+                    <a href={selected.cite}>Сайт магазина: {selected.site}</a>
+                  ) : null}
+                </div>
+              </InfoWindow>
+            ) : null}
+          </GoogleMap>
+        )}
         {tr}
       </div>
     </div>
