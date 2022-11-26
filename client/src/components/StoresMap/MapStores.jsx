@@ -21,6 +21,7 @@ const MapStores = () => {
   const [directions, setDirections] = React.useState(null);
   const [selected, setSelected] = React.useState(null);
   const [localPosition, setLocalPosition] = React.useState(null);
+  const [tr, setTr] = React.useState(" ");
 
   const [stores, setStores] = React.useState([
     { lat: 51.14665642264855, lng: 71.44849094974086, category: 2 },
@@ -29,6 +30,10 @@ const MapStores = () => {
     { lat: 51.11844328997825, lng: 71.49878773318812, category: 4 },
     { lat: 51.12291912090751, lng: 71.45163821415798, category: 6 },
   ]);
+
+  setTimeout(() => {
+    setTr('s')
+  }, 1000);
 
   useJsApiLoader({
     googleMapsApiKey: "AIzaSyAEK1DZMHEp61t9OMxl3CCEPKjvjosDvjA", // Connectin API
@@ -176,6 +181,7 @@ const MapStores = () => {
             </InfoWindow>
           ) : null}
         </GoogleMap>
+        {tr}
       </div>
     </div>
   );

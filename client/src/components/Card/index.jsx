@@ -19,8 +19,8 @@ const ProductCard = ({ id, name, description, price, image }) => {
       <CardBody>
         <Image
         h={300}
-          src={image}
-          alt="Green double couch with wooden legs"
+          src={image }
+          alt={id}
           borderRadius="lg"
         />
         <Stack mt="6" spacing="3">
