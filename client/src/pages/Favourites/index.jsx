@@ -13,20 +13,30 @@ import axios from "../../axios";
 const Favourites = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [favourites, setFavourites] = useState([]);
+  const [favouritesOfUser, setFavouritesOfUser] = useState([]);
 
   const id = useSelector(userId);
 
   useEffect(() => {
-    async function fetchFavourites() {
-      try {
+    function fetchDatas() {
+      async function fetchFavourites() {
         const res = await axios.get("/auth/favourites/");
-        console.log(res.data);
+        console.log(res.data)
         setFavourites(res.data);
-      } catch (error) {
-        console.log(error);
       }
+      function fetchFavouritesOfUser() {
+        favourites.forEach(async (obj) => {
+          if (obj.user === id) {
+            const { data } = await axios.get(`/products/good/${obj.good}/`);
+            setFavouritesOfUser([...favouritesOfUser, data]);
+          }
+          console.log("favs", favouritesOfUser);
+        });
+      }
+      fetchFavourites();
+      fetchFavouritesOfUser();
     }
-    fetchFavourites();
+    fetchDatas();
   }, []);
 
   return (
@@ -36,13 +46,9 @@ const Favourites = () => {
       </h1>
       <div className="products-block">
         {/* view products */}
-        {favourites.map(async (obj, i) => {
-          if (obj.user === id) {
-            const { data } = await axios.get(`/products/good/${obj.good}/`);
-            console.log(data);
-            return <ProductCard key={i} />;
-          }
-        })}
+        {favouritesOfUser.map((obj, i) => (
+          <ProductCard key={i} {...obj} />
+        ))}
       </div>
       <Pagination onChangePagination={(page) => setCurrentPage(page)} />
     </div>

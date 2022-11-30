@@ -37,9 +37,9 @@ const ProductCard = ({ id, name, description, price, image }) => {
         <Stack mt="6" spacing="3">
           <Heading size="md">{name}</Heading>
           <Text>
-            {description.length > 100
+            {/* {description.length > 100
               ? description.substr(0, 100) + "..."
-              : description}
+              : description} */}
           </Text>
           <Text color="blue.600" fontSize="2xl">
             {price.replace(/[^0-9]/g, "")} ₸
